@@ -66,6 +66,43 @@ export type AnalyticsSummary = {
   auto_resolved: number;
   escalated: number;
   fraud_flagged: number;
+  avg_confidence_score: number;
+  resolution_rate: number;
+  fraud_detection_rate: number;
+  tickets_by_category: Record<string, number>;
+  tickets_by_channel: Record<string, number>;
+  tickets_by_status: Record<string, number>;
+};
+
+export type AnalyticsTrends = { trends: { hour: string; tickets: number }[]; period: string };
+export type FraudStats = Record<string, number>;
+export type ComplaintClusters = { clusters: { category: string; total: number; recent: number; spike: boolean }[]; spike_detected: boolean };
+
+export type CompanyAnalytics = {
+  company_name: string;
+  user_email: string;
+  plan_tier: string;
+  plan_limit: number;
+  plan_used: number;
+  months: string[];
+  monthly_volumes: number[];
+  monthly_resolved: number[];
+  monthly_fraud: number[];
+  monthly_escalated: number[];
+  kpis: {
+    total_tickets: number;
+    total_resolved: number;
+    total_fraud: number;
+    total_escalated: number;
+    resolution_rate: number;
+    fraud_rate: number;
+    avg_confidence: number;
+    avg_response_ms: number;
+  };
+  category_breakdown: Record<string, number>;
+  channel_breakdown: Record<string, number>;
+  top_issues: { category: string; count: number }[];
+  recent_activity: { id: string; subject: string; status: string; confidence: number; hours_ago: number; category: string }[];
 };
 
 export function getCases() {
@@ -94,7 +131,23 @@ export function createSession(fields: Record<string, unknown>) {
 }
 
 export function getAnalyticsSummary() {
-  return invoke<AnalyticsSummary>("arguscx-analytics", {});
+  return invoke<AnalyticsSummary>("arguscx-analytics", { action: "summary" });
+}
+
+export function getAnalyticsTrends() {
+  return invoke<AnalyticsTrends>("arguscx-analytics", { action: "trends" });
+}
+
+export function getFraudStats() {
+  return invoke<FraudStats>("arguscx-analytics", { action: "fraud-stats" });
+}
+
+export function getComplaintClusters() {
+  return invoke<ComplaintClusters>("arguscx-analytics", { action: "complaint-clusters" });
+}
+
+export function getCompanyAnalytics() {
+  return invoke<CompanyAnalytics>("arguscx-analytics", { action: "company" });
 }
 
 export type PublicChallenge = { step_index: number; challenge_type: string; instruction_text: string; required_action: string };

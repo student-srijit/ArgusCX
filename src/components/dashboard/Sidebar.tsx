@@ -1,11 +1,11 @@
 import { Link, useLocation } from "react-router-dom";
-import { Activity, BarChart3, BookOpen, Braces, Building2, ClipboardCheck, FileCheck2, FileText, Gauge, GitBranch, KeyRound, LayoutDashboard, Settings2, ShieldCheck, UserRound } from "lucide-react";
+import { Activity, BarChart3, Braces, Building2, ClipboardCheck, FileCheck2, Gauge, GitBranch, KeyRound, LayoutDashboard, Settings2, ShieldCheck, UserRound } from "lucide-react";
 import SignOutButton from "./SignOutButton";
 import SystemHealth from "./SystemHealth";
 
 const groups = [
   { label: "Workspace", items: [["/dashboard", "Overview", LayoutDashboard], ["/dashboard/profile", "Profile", UserRound], ["/dashboard/verify-new", "New verification", ClipboardCheck], ["/dashboard/sessions", "Sessions", Activity], ["/dashboard/cases", "Cases", FileCheck2], ["/dashboard/queue", "Review queue", Gauge]] },
-  { label: "Intelligence", items: [["/dashboard/analytics", "Analytics", BarChart3], ["/dashboard/company", "Company", Building2], ["/dashboard/fraud", "Relationships", GitBranch], ["/dashboard/evidence", "Evidence", FileText]] },
+  { label: "Intelligence", items: [["/dashboard/analytics", "Analytics", BarChart3], ["/dashboard/company", "Company", Building2], ["/dashboard/fraud", "Relationships", GitBranch]] },
   { label: "Platform", items: [["/dashboard/api", "API & credentials", KeyRound], ["/dashboard/policies", "Policies", ShieldCheck]] },
   { label: "System", items: [["/dashboard/audit", "Audit log", Braces], ["/dashboard/settings", "Settings", Settings2]] },
 ] as const;
