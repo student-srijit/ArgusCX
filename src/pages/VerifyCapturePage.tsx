@@ -6,6 +6,17 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { useParams } from "react-router-dom";
 import { getPublicSession, completeSession, type PublicChallenge, type PublicSessionData } from "@/lib/api_cases";
+import { supabase } from "@/integrations/supabase/client";
+
+const EVIDENCE_BUCKET = "verification-evidence";
+
+async function uploadEvidenceFrame(sessionId: string, challengeIdx: number, blob: Blob): Promise<{ id: string; url: string } | null> {
+  const path = `evidence/${sessionId}/${challengeIdx}-${crypto.randomUUID()}.jpg`;
+  const { error } = await supabase.storage.from(EVIDENCE_BUCKET).upload(path, blob, { contentType: "image/jpeg", upsert: false });
+  if (error) return null;
+  const { data } = supabase.storage.from(EVIDENCE_BUCKET).getPublicUrl(path);
+  return data.publicUrl ? { id: path, url: data.publicUrl } : null;
+}
 
 type CapturePhase =
   | "loading"
@@ -95,27 +106,27 @@ export default function VerifyCapturePage() {
     return new Promise((resolve) => { canvas.toBlob((blob) => resolve(blob), "image/jpeg", 0.9); });
   };
 
-  const submitSession = useCallback(async (challengeIndexes: number[], framesToUpload: { blob: Blob; challengeIdx: number }[]) => {
+  const submitSession = useCallback(async (framesToUpload: { blob: Blob; challengeIdx: number }[]) => {
     if (!sessionToken) {
       setError("This verification link is incomplete. Request a new link from support.");
       setPhase("error");
       return;
     }
     setPhase("uploading");
-    setUploadProgress(30);
+    setUploadProgress(10);
     try {
-      // Evidence storage is not wired yet in this migrated runtime, so frames
-      // are recorded by placeholder id — matching the original fallback path
-      // that ran whenever the upload endpoint was unavailable.
-      const evidenceIds = framesToUpload.length
-        ? framesToUpload.map(({ challengeIdx }) => `frame_${challengeIdx}_${Date.now()}`)
-        : challengeIndexes.map((i) => `frame_${i}_${Date.now()}`);
+      const uploaded: { id: string; url: string }[] = [];
+      for (let i = 0; i < framesToUpload.length; i++) {
+        const result = await uploadEvidenceFrame(sessionId, framesToUpload[i].challengeIdx, framesToUpload[i].blob);
+        if (result) uploaded.push(result);
+        setUploadProgress(10 + Math.round(((i + 1) / Math.max(framesToUpload.length, 1)) * 70));
+      }
 
-      setUploadProgress(70);
+      setUploadProgress(85);
       await completeSession(sessionId, sessionToken, {
         assurance_level: "live_video",
-        evidence_ids: evidenceIds,
-        evidence_urls: [],
+        evidence_ids: uploaded.map((item) => item.id),
+        evidence_urls: uploaded.map((item) => item.url),
       });
       setUploadProgress(100);
       setPhase("completed");
@@ -137,7 +148,7 @@ export default function VerifyCapturePage() {
     setCompletedChallenges(nextCompleted);
     const challenges = session?.challenges || [];
     if (idx + 1 >= challenges.length) {
-      submitSession(nextCompleted, newFrames);
+      submitSession(newFrames);
     } else {
       setCurrentChallengeIdx(idx + 1);
     }

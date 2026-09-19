@@ -1,0 +1,40 @@
+insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
+values (
+  'verification-evidence',
+  'verification-evidence',
+  true,
+  15 * 1024 * 1024,
+  array['image/jpeg','image/png','image/webp','video/mp4','video/webm']::text[]
+)
+on conflict (id) do nothing;
+
+do $$
+begin
+  if not exists (
+    select 1 from pg_policies
+    where schemaname = 'storage' and tablename = 'objects'
+      and policyname = 'verification_evidence_read'
+  ) then
+    execute $policy$
+    create policy "verification_evidence_read"
+    on storage.objects
+    for select
+    to public
+    using (bucket_id = 'verification-evidence' and name like 'evidence/%')
+    $policy$;
+  end if;
+
+  if not exists (
+    select 1 from pg_policies
+    where schemaname = 'storage' and tablename = 'objects'
+      and policyname = 'verification_evidence_upload'
+  ) then
+    execute $policy$
+    create policy "verification_evidence_upload"
+    on storage.objects
+    for insert
+    to anon
+    with check (bucket_id = 'verification-evidence' and name like 'evidence/%')
+    $policy$;
+  end if;
+end $$;
