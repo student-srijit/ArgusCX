@@ -1,1 +1,4 @@
 project_id = "spb-t4nk896123yudi2u"
+
+[functions.arguscx-readiness]
+verify_jwt = true

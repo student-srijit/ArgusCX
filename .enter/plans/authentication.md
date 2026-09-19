@@ -12,7 +12,14 @@ Private credentials pasted in chat must be revoked/rotated by their owners. Coll
 
 Python/OpenCV/YOLO/local sentence-transformer workloads are not directly portable to managed TypeScript functions. First distinguish active execution paths from dormant workers and test viable replacements. Any active capability without a validated equivalent is a full-release blocker, not permission to label a partial deployment complete. Preserve the existing rule that unassessed evidence requires human review.
 
-## Current execution status
+## Latest verified status (supersedes probe history below)
+- The user's existing securely stored MongoDB URI works: the live probe now returns HTTP 200, `ready: true`, `database: connected`, `writes_performed: false`. No credential change was needed this turn.
+- The earlier Deno-community driver produced misleading authentication errors. Its SCRAM implementation also skips server-signature verification; it was removed, not carried into the application.
+- The successful implementation uses official MongoDB driver 6.10.0 from esm.sh with unused native modules excluded through CDN aliases. Normal SCRAM/TLS verification remains enabled. Native compression/Kerberos/AWS auth/client-side encryption are not used by this probe. The missing optional SASL dependency in driver 5.x caused a separate null-module crash; driver 6.x includes it.
+- Only the readiness function is deployed. The frontend conversion and application backend rewrite remain unfinished; do not attribute the missing application deployment to invalid MongoDB credentials.
+- Next work: migrate the frontend runtime while preserving existing routes, design, and Firebase login, then implement the protected API modules against the existing source data.
+
+## Probe investigation history
 - Migration approved; Firebase remains the authentication provider. The Cloud Google-provider change was declined and was not applied.
 - `ARGUSCX_MONGO_URI` was collected through secure storage. Credential rotation itself is not independently verified.
 - AI capability is enabled, but no replacement AI model has been selected and no AI implementation has been changed.
