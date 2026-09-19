@@ -56,6 +56,20 @@ function timingSafeEqual(a: string, b: string) {
   return mismatch === 0;
 }
 
+// ARGUSCX_ADMIN_EMAIL may hold one address or a comma/semicolon/newline
+// separated list of every workspace admin allowed to sign in.
+function adminEmails(): string[] {
+  return (Deno.env.get("ARGUSCX_ADMIN_EMAIL") || "")
+    .split(/[,;\n]/)
+    .map((entry) => entry.trim().toLowerCase())
+    .filter(Boolean);
+}
+
+function isAdminEmail(email: string): boolean {
+  const normalized = email.trim().toLowerCase();
+  return normalized.length > 0 && adminEmails().includes(normalized);
+}
+
 async function withUsersCollection<T>(fn: (col: any) => Promise<T>): Promise<T> {
   const uri = Deno.env.get("ARGUSCX_MONGO_URI");
   if (!uri) throw new Error("not_configured");
@@ -91,11 +105,10 @@ Deno.serve(async (request: Request) => {
 
   try {
     if (action === "login") {
-      const adminEmail = Deno.env.get("ARGUSCX_ADMIN_EMAIL") || "";
       const adminPassword = Deno.env.get("ARGUSCX_ADMIN_PASSWORD") || "";
       const email = String(payload.email || "");
       const password = String(payload.password || "");
-      if (!adminEmail || !adminPassword || !timingSafeEqual(email, adminEmail) || !timingSafeEqual(password, adminPassword)) {
+      if (!adminPassword || !isAdminEmail(email) || !timingSafeEqual(password, adminPassword)) {
         return jsonResponse({ detail: "Invalid dashboard credentials" }, 401);
       }
       const token = await issueAppToken("dashboard_admin", email, "password");
@@ -119,8 +132,7 @@ Deno.serve(async (request: Request) => {
       if (!email || decoded.email_verified !== true) {
         return jsonResponse({ detail: "A verified Google email is required" }, 403);
       }
-      const adminEmail = Deno.env.get("ARGUSCX_ADMIN_EMAIL") || "";
-      if (!adminEmail || email.toLowerCase() !== adminEmail.toLowerCase()) {
+      if (!isAdminEmail(email)) {
         return jsonResponse({ detail: "This Google account is not authorized for the ArgusCX workspace." }, 403);
       }
       const token = await issueAppToken(String(decoded.sub), email, "firebase");
