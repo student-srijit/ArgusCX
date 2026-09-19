@@ -12,6 +12,16 @@ Private credentials pasted in chat must be revoked/rotated by their owners. Coll
 
 Python/OpenCV/YOLO/local sentence-transformer workloads are not directly portable to managed TypeScript functions. First distinguish active execution paths from dormant workers and test viable replacements. Any active capability without a validated equivalent is a full-release blocker, not permission to label a partial deployment complete. Preserve the existing rule that unassessed evidence requires human review.
 
+## Current execution status
+- Migration approved; Firebase remains the authentication provider. The Cloud Google-provider change was declined and was not applied.
+- `ARGUSCX_MONGO_URI` was collected through secure storage. Credential rotation itself is not independently verified.
+- AI capability is enabled, but no replacement AI model has been selected and no AI implementation has been changed.
+- Inspected the shared Cloud schema: existing `profiles`, `tickets`, and `chat_messages` are untouched; ownership is not assumed.
+- The initial MongoDB Node-driver probe failed deployment with HTTP 500 because its optional native compression dependency could not bundle. Replaced only the probe's driver with a Deno-compatible version.
+- `arguscx-readiness` is deployed. Its live read-only probe returns HTTP 503 with `database: authentication_failed` and `writes_performed: false`. Database connectivity and source inspection remain blocked; no business records have been changed or migrated.
+- Local `deno` is unavailable. There is no root frontend package/build yet; the existing Next.js app has not been migrated or published.
+- Next gate: resolve the MongoDB authentication failure through secure configuration, then inspect source data read-only before porting dependent functionality.
+
 ## Implementation checklist
 
 ### 1. Establish safe runtime and data access
