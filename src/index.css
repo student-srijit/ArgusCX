@@ -630,6 +630,11 @@ a, button, [role="button"] { cursor: pointer; }
 .api-key-row span { margin-top: 4px; color: var(--text-muted); font-family: var(--font-mono); font-size: 10px; }
 .api-notice { padding: 13px 16px; border-radius: 8px; font-size: 12px; }
 .api-notice-error { border: 1px solid rgba(255,107,122,.3); color: var(--danger); background: rgba(255,107,122,.08); }
+.case-pill { display: inline-flex; align-items: center; gap: 5px; padding: 3px 10px; border-radius: 999px; font-size: 11px; font-weight: 600; letter-spacing: .02em; text-transform: uppercase; }
+.case-tone-success { color: var(--success); background: rgba(103,214,163,.12); border: 1px solid rgba(103,214,163,.28); }
+.case-tone-warning { color: var(--warning); background: rgba(243,184,91,.12); border: 1px solid rgba(243,184,91,.28); }
+.case-tone-danger { color: var(--danger); background: rgba(255,107,122,.12); border: 1px solid rgba(255,107,122,.28); }
+.case-tone-neutral { color: var(--text-secondary); background: var(--bg-elevated); border: 1px solid var(--border); }
 .api-docs { padding: 28px; }
 .api-docs h2 { margin: 7px 0 10px; font-size: 25px; letter-spacing: -.04em; }
 .doc-block { padding: 18px 0; border-top: 1px solid var(--border); }

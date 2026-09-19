@@ -14,6 +14,9 @@ const DashboardOverview = lazy(() => import("./pages/dashboard/DashboardOverview
 const SettingsPage = lazy(() => import("./pages/dashboard/SettingsPage"));
 const ApiConsolePage = lazy(() => import("./pages/dashboard/ApiConsolePage"));
 const VerifyNewPage = lazy(() => import("./pages/dashboard/VerifyNewPage"));
+const CasesListPage = lazy(() => import("./pages/dashboard/CasesListPage"));
+const CaseDetailPage = lazy(() => import("./pages/dashboard/CaseDetailPage"));
+const SessionsPage = lazy(() => import("./pages/dashboard/SessionsPage"));
 
 function RouteFallback() {
   return (
@@ -36,6 +39,9 @@ export default function App() {
           <Route path="/dashboard" element={<DashboardLayout />}>
             <Route index element={<DashboardOverview />} />
             <Route path="verify-new" element={<VerifyNewPage />} />
+            <Route path="sessions" element={<SessionsPage />} />
+            <Route path="cases" element={<CasesListPage />} />
+            <Route path="cases/:caseId" element={<CaseDetailPage />} />
             <Route path="queue" element={<Navigate to="/dashboard/cases" replace />} />
             <Route path="api" element={<ApiConsolePage />} />
             <Route path="settings" element={<SettingsPage />} />
