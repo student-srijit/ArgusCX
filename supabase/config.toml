@@ -2,3 +2,18 @@ project_id = "spb-t4nk896123yudi2u"
 
 [functions.arguscx-readiness]
 verify_jwt = true
+
+[functions.arguscx-auth]
+verify_jwt = false
+
+[functions.arguscx-sessions]
+verify_jwt = false
+
+[functions.arguscx-cases]
+verify_jwt = false
+
+[functions.arguscx-analytics]
+verify_jwt = false
+
+[functions.arguscx-api-keys]
+verify_jwt = false
