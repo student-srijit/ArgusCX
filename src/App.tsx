@@ -21,6 +21,10 @@ const ProfilePage = lazy(() => import("./pages/dashboard/ProfilePage"));
 const AnalyticsPage = lazy(() => import("./pages/dashboard/AnalyticsPage"));
 const CompanyPage = lazy(() => import("./pages/dashboard/CompanyPage"));
 const FraudPage = lazy(() => import("./pages/dashboard/FraudPage"));
+const PoliciesPage = lazy(() => import("./pages/dashboard/PoliciesPage"));
+const AuditPage = lazy(() => import("./pages/dashboard/AuditPage"));
+const ChatPage = lazy(() => import("./pages/dashboard/ChatPage"));
+const AgentsPage = lazy(() => import("./pages/dashboard/AgentsPage"));
 
 function RouteFallback() {
   return (
