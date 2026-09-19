@@ -19,7 +19,9 @@ Python/OpenCV/YOLO/local sentence-transformer workloads are not directly portabl
 - Inspected the shared Cloud schema: existing `profiles`, `tickets`, and `chat_messages` are untouched; ownership is not assumed.
 - The initial MongoDB Node-driver probe failed deployment with HTTP 500 because its optional native compression dependency could not bundle. Replaced only the probe's driver with a Deno-compatible version.
 - `arguscx-readiness` is deployed. Its live read-only probe returns HTTP 503 with `database: authentication_failed` and `writes_performed: false`. Database connectivity and source inspection remain blocked; no business records have been changed or migrated.
-- Local `deno` is unavailable. There is no root frontend package/build yet; the existing Next.js app has not been migrated or published.
+- After a second secure connection-string update and a more precise error classifier, the live probe still returns HTTP 503 `authentication_failed`. Authentication configuration must be resolved before source-data inspection; do not infer that source data is empty.
+- Local `deno` is unavailable. `pnpm --dir frontend run build` failed because frontend dependencies are not installed (`next: not found`); `git diff --check` passed. There is no root frontend package/build yet; the existing Next.js app has not been migrated or published.
+- The backend-log search tool returned HTTP 500; diagnosis above comes from the live probe response, not retrieved logs.
 - Next gate: resolve the MongoDB authentication failure through secure configuration, then inspect source data read-only before porting dependent functionality.
 
 ## Implementation checklist

@@ -29,8 +29,9 @@ Deno.serve(async (request: Request) => {
   } catch (error: unknown) {
     // Driver error messages may contain hosts or credentials. Only log a safe category.
     const message = error instanceof Error ? error.message : "";
-    const category = /authentication|auth failed|bad auth|scram/i.test(message) ? "authentication_failed"
-      : /not a function|not implemented|not supported|is not defined/i.test(message) ? "unsupported_runtime"
+    const category = /not a function|not implemented|not supported|is not defined/i.test(message) ? "unsupported_runtime"
+      : /authentication failed|auth failed|bad auth|unable to authenticate/i.test(message) ? "authentication_failed"
+      : /auth|scram|sasl/i.test(message) ? "authentication_configuration_failed"
       : /dns|srv|ENOTFOUND|no records/i.test(message) ? "dns_unavailable"
       : /certificate|tls|ssl/i.test(message) ? "tls_failed"
       : /timeout|timed out|refused|network|unreachable|permission denied/i.test(message) ? "network_unavailable"
